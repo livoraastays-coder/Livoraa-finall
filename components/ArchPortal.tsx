@@ -47,20 +47,21 @@ export default function ArchPortal() {
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) =>
+      ([entry]) => {
         setIsNearViewport(
           entry.isIntersecting
-        ),
+        );
+      },
       {
-        rootMargin:
-          "60% 0px 60% 0px",
+        rootMargin: "60% 0px 60% 0px",
       }
     );
 
     observer.observe(el);
 
-    return () =>
+    return () => {
       observer.disconnect();
+    };
   }, []);
 
   if (reducedMotion) {
@@ -111,7 +112,15 @@ export default function ArchPortal() {
           <div className="h-full w-full bg-ink" />
         )}
 
-        {/* SCROLL CUE */}
+        {/* ============================================================
+            SCROLL TO EXPLORE CUE
+
+            Changes:
+            - approximately 20% larger text
+            - taller animated light line
+            - remains visible longer during portal progress
+        ============================================================ */}
+
         <div
           className="
             pointer-events-none
@@ -129,12 +138,14 @@ export default function ArchPortal() {
           style={{
             opacity: Math.max(
               0,
-              1 - progress * 5
+              1 - progress * 2.5
             ),
+
             transform: `
               translateX(-50%)
               translateY(${progress * 18}px)
             `,
+
             transition:
               "opacity 200ms ease-out",
           }}
@@ -142,19 +153,20 @@ export default function ArchPortal() {
           <p
             className="
               whitespace-nowrap
-              text-[9px]
+              text-[11px]
               font-medium
               uppercase
               tracking-[0.32em]
               text-surface/70
-              md:text-[10px]
+              md:text-[12px]
             "
           >
             Scroll to explore LIVORAA
           </p>
 
           {/* TRAVELLING LIGHT LINE */}
-          <div className="relative h-12 w-px overflow-hidden bg-surface/15">
+
+          <div className="relative h-14 w-px overflow-hidden bg-surface/15">
             <div
               className="
                 absolute
@@ -193,10 +205,7 @@ export default function ArchPortal() {
             }
           }
 
-          @media (
-            prefers-reduced-motion:
-              reduce
-          ) {
+          @media (prefers-reduced-motion: reduce) {
             div {
               animation: none;
             }
