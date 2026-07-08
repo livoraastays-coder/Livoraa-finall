@@ -1,4 +1,5 @@
 import { createClient } from "@sanity/client";
+
 import {
   sanityProjectId,
   sanityDataset,
@@ -7,39 +8,55 @@ import {
   isSanityConfigured,
 } from "./env";
 
-// The client is constructed even when Sanity isn't configured (createClient
-// itself doesn't make a network call), but every data-access function in
-// lib/data/*.ts checks `isSanityConfigured` before ever calling
-// `sanityClient.fetch(...)`, so an unconfigured project never attempts a
-// network request — this is what keeps local/dev builds working without a
-// Sanity project.
 export const sanityClient = createClient({
   projectId: sanityProjectId || "placeholder-project-id",
   dataset: sanityDataset,
   apiVersion: sanityApiVersion,
-  useCdn: process.env.NODE_ENV === "production",
+
+  // Always fetch directly from Sanity API.
+  // This avoids stale CMS content after publishing.
+  useCdn: false,
+
   token: sanityReadToken || undefined,
-  perspective: sanityReadToken ? "previewDrafts" : "published",
+
+  perspective: sanityReadToken
+    ? "previewDrafts"
+    : "published",
 });
 
 export { isSanityConfigured };
 
 /**
- * Safe fetch wrapper: runs a GROQ query against Sanity, but only if
- * Sanity is configured, and never throws — any error (missing project,
- * network issue, bad query) resolves to `null` so callers can fall back
- * to static data without a try/catch at every call site.
+ * Fetch fresh content from Sanity.
+ *
+ * - Returns null if Sanity is not configured
+ * - Does not use cached Next.js fetch results
+ * - Falls back safely if Sanity fetch fails
  */
 export async function safeSanityFetch<T>(
   query: string,
   params: Record<string, unknown> = {}
 ): Promise<T | null> {
-  if (!isSanityConfigured) return null;
+  if (!isSanityConfigured) {
+    return null;
+  }
+
   try {
-    const result = await sanityClient.fetch<T>(query, params);
+    const result = await sanityClient.fetch<T>(
+      query,
+      params,
+      {
+        cache: "no-store",
+      }
+    );
+
     return result ?? null;
   } catch (error) {
-    console.error("[sanity] fetch failed, falling back to static data:", error);
+    console.error(
+      "[sanity] fetch failed, falling back to static data:",
+      error
+    );
+
     return null;
   }
 }
