@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import HeroParallax from "@/components/HeroParallax";
 import RevealText from "@/components/RevealText";
 import FadeIn from "@/components/FadeIn";
@@ -7,117 +8,128 @@ import ImmersivePropertyDiscovery from "@/components/ImmersivePropertyDiscovery"
 import EditorialFrame from "@/components/EditorialFrame";
 import CityCard from "@/components/CityCard";
 import WhatsAppButton from "@/components/WhatsAppButton";
+
 import { getProperties } from "@/lib/data/properties";
 import { getCities } from "@/lib/data/cities";
+import { getHomepage } from "@/lib/data/homepage";
 import { siteSettings } from "@/lib/data/siteSettings";
 
-const pillars = [
-  {
-    title: "Thoughtfully Designed",
-    text: "Every space is considered for comfort, function and atmosphere — nothing added purely for show.",
-  },
-  {
-    title: "Local, Curated",
-    text: "Recommendations that help guests experience the city beyond the obvious first stop.",
-  },
-  {
-    title: "Seamless Stays",
-    text: "Simple communication and thoughtful digital guest assistance, from booking to departure.",
-  },
-  {
-    title: "Details That Matter",
-    text: "From sleep comfort to arrival and departure, small details shape how a stay is remembered.",
-  },
-];
 
 export default async function HomePage() {
-  const [properties, cities] = await Promise.all([getProperties(), getCities()]);
+  const [properties, cities, homepage] = await Promise.all([
+    getProperties(),
+    getCities(),
+    getHomepage(),
+  ]);
 
   return (
     <div>
-      {/* SECTION 1 — HERO, with layered parallax background */}
+      {/* ================================================================
+          SECTION 1 — HERO
+      ================================================================= */}
+
       <section className="relative flex min-h-[90vh] items-center overflow-hidden border-b border-border">
         <HeroParallax seed="hero-livoraa" />
+
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
 
         <div className="relative mx-auto max-w-content px-6 py-32 md:px-10">
           <FadeIn>
-            <p className="eyebrow mb-6">{siteSettings.brandName}</p>
+            <p className="eyebrow mb-6">
+              {homepage.hero.eyebrow || siteSettings.brandName}
+            </p>
           </FadeIn>
+
           <RevealText
             as="h1"
             className="block max-w-2xl font-serif text-6xl leading-[1.05] text-ink md:text-8xl"
           >
-            Stay, thoughtfully.
+            {homepage.hero.title}
           </RevealText>
+
           <FadeIn delay={250}>
             <p className="mt-7 max-w-md text-base leading-relaxed text-ink/80 md:text-lg">
-              Boutique stays shaped by thoughtful spaces, quiet details and
-              experiences worth remembering.
+              {homepage.hero.description}
             </p>
           </FadeIn>
+
           <FadeIn delay={350}>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href="/stays"
                 className="bg-ink px-7 py-3.5 text-sm font-medium tracking-wide text-surface transition-colors duration-300 ease-editorial hover:bg-walnut"
               >
-                Explore Our Stays
+                {homepage.hero.primaryButtonText}
               </Link>
+
               <Link
                 href="/experience"
                 className="border border-ink/30 px-7 py-3.5 text-sm font-medium tracking-wide text-ink transition-colors duration-300 ease-editorial hover:border-ink hover:bg-ink hover:text-surface"
               >
-                Discover LIVORAA
+                {homepage.hero.secondaryButtonText}
               </Link>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* SIGNATURE MOMENT — The LIVORAA Arch Portal */}
+
+      {/* ================================================================
+          SIGNATURE MOMENT — LIVORAA ARCH PORTAL
+      ================================================================= */}
+
       <ArchPortal />
 
-      {/* SECTION 2 — INTRODUCTION */}
+
+      {/* ================================================================
+          SECTION 2 — INTRODUCTION
+      ================================================================= */}
+
       <section className="mx-auto max-w-content px-6 py-24 md:px-10 md:py-32">
         <div className="grid gap-10 md:grid-cols-2 md:gap-20">
           <RevealText
             as="h2"
             className="block font-serif text-4xl leading-tight text-ink md:text-5xl"
           >
-            We believe a memorable stay lives in the details.
+            {homepage.introduction.title}
           </RevealText>
+
           <FadeIn delay={100}>
             <p className="text-base leading-relaxed text-muted md:text-lg">
-              LIVORAA curates spaces with attention to comfort, atmosphere,
-              everyday convenience and the character of the city they sit
-              in. Each stay is designed to feel considered rather than
-              staged — a place you'd choose to return to, not just pass
-              through.
+              {homepage.introduction.text}
             </p>
           </FadeIn>
         </div>
       </section>
 
-      {/* SECTION 3 — IMMERSIVE PROPERTY DISCOVERY (replaces flat grid) */}
+
+      {/* ================================================================
+          SECTION 3 — PROPERTY DISCOVERY
+      ================================================================= */}
+
       <section className="border-t border-border bg-surface">
         <div className="mx-auto max-w-content px-6 pt-24 md:px-10 md:pt-32">
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
               <div>
-                <p className="eyebrow mb-4">Our Stays</p>
+                <p className="eyebrow mb-4">
+                  {homepage.staysSection.eyebrow}
+                </p>
+
                 <h2 className="max-w-lg font-serif text-4xl leading-tight text-ink md:text-5xl">
-                  Current and upcoming properties
+                  {homepage.staysSection.title}
                 </h2>
+
                 <p className="mt-3 max-w-sm text-sm text-muted">
-                  Keep scrolling — each stay takes its turn centre stage.
+                  {homepage.staysSection.description}
                 </p>
               </div>
+
               <Link
                 href="/stays"
                 className="hidden text-sm font-medium text-ink underline decoration-border underline-offset-4 hover:decoration-ink md:inline-block"
               >
-                View all stays
+                {homepage.staysSection.buttonText}
               </Link>
             </div>
           </FadeIn>
@@ -132,27 +144,35 @@ export default async function HomePage() {
             href="/stays"
             className="text-sm font-medium text-ink underline decoration-border underline-offset-4"
           >
-            View all stays
+            {homepage.staysSection.buttonText}
           </Link>
         </div>
       </section>
 
-      {/* SECTION 4 — THE LIVORAA EXPERIENCE */}
+
+      {/* ================================================================
+          SECTION 4 — LIVORAA EXPERIENCE
+      ================================================================= */}
+
       <section className="mx-auto max-w-content px-6 py-24 md:px-10 md:py-32">
         <FadeIn>
-          <p className="eyebrow mb-4">The LIVORAA Experience</p>
+          <p className="eyebrow mb-4">
+            {homepage.experienceSection.eyebrow}
+          </p>
+
           <h2 className="max-w-xl font-serif text-4xl leading-tight text-ink md:text-5xl">
-            What shapes every stay
+            {homepage.experienceSection.title}
           </h2>
         </FadeIn>
 
         <div className="mt-16 grid gap-x-8 gap-y-14 md:grid-cols-2">
-          {pillars.map((pillar, i) => (
-            <FadeIn key={pillar.title} delay={i * 80}>
+          {homepage.experienceSection.pillars.map((pillar, i) => (
+            <FadeIn key={`${pillar.title}-${i}`} delay={i * 80}>
               <div className="border-t border-border pt-6">
                 <p className="mb-3 font-serif text-2xl text-ink">
                   {pillar.title}
                 </p>
+
                 <p className="max-w-md text-sm leading-relaxed text-muted">
                   {pillar.text}
                 </p>
@@ -166,18 +186,25 @@ export default async function HomePage() {
             href="/experience"
             className="mt-14 inline-block text-sm font-medium text-ink underline decoration-border underline-offset-4 hover:decoration-ink"
           >
-            More on the LIVORAA experience
+            {homepage.experienceSection.buttonText}
           </Link>
         </FadeIn>
       </section>
 
-      {/* SECTION 5 — DESTINATIONS */}
+
+      {/* ================================================================
+          SECTION 5 — DESTINATIONS
+      ================================================================= */}
+
       <section className="border-t border-border bg-surface py-24 md:py-32">
         <div className="mx-auto max-w-content px-6 md:px-10">
           <FadeIn>
-            <p className="eyebrow mb-4">Destinations</p>
+            <p className="eyebrow mb-4">
+              {homepage.destinationsSection.eyebrow}
+            </p>
+
             <h2 className="max-w-xl font-serif text-4xl leading-tight text-ink md:text-5xl">
-              Cities we call home
+              {homepage.destinationsSection.title}
             </h2>
           </FadeIn>
 
@@ -186,7 +213,11 @@ export default async function HomePage() {
               <FadeIn key={city.slug} delay={i * 100}>
                 <CityCard
                   city={city}
-                  stayCount={properties.filter((p) => p.citySlug === city.slug).length}
+                  stayCount={
+                    properties.filter(
+                      (property) => property.citySlug === city.slug
+                    ).length
+                  }
                 />
               </FadeIn>
             ))}
@@ -194,44 +225,61 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 6 — DIGITAL CONCIERGE */}
-      {siteSettings.conciergeEnabled && (
+
+      {/* ================================================================
+          SECTION 6 — DIGITAL CONCIERGE
+      ================================================================= */}
+
+      {homepage.conciergeSection.enabled && (
         <section className="mx-auto max-w-content px-6 py-24 md:px-10 md:py-32">
           <div className="grid items-center gap-12 md:grid-cols-2 md:gap-20">
             <FadeIn>
-              <EditorialFrame seed="concierge" ratio="aspect-[4/3]" />
+              <EditorialFrame
+                seed="concierge"
+                ratio="aspect-[4/3]"
+              />
             </FadeIn>
+
             <FadeIn delay={100}>
-              <p className="eyebrow mb-4">Digital Concierge</p>
+              <p className="eyebrow mb-4">
+                {homepage.conciergeSection.eyebrow}
+              </p>
+
               <h2 className="font-serif text-4xl leading-tight text-ink md:text-5xl">
-                Everything you need, within reach.
+                {homepage.conciergeSection.title}
               </h2>
+
               <p className="mt-6 max-w-md text-base leading-relaxed text-muted">
-                Selected LIVORAA stays provide guests with a digital
-                concierge — local recommendations, stay information,
-                services and assistance, available quietly in the
-                background of your stay.
+                {homepage.conciergeSection.text}
               </p>
             </FadeIn>
           </div>
         </section>
       )}
 
-      {/* SECTION 7 — SOCIAL / INSTAGRAM */}
+
+      {/* ================================================================
+          SECTION 7 — INSTAGRAM
+      ================================================================= */}
+
       <section className="border-t border-border bg-surface py-24 md:py-32">
         <div className="mx-auto max-w-content px-6 md:px-10">
           <FadeIn>
             <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <p className="eyebrow mb-4">Instagram</p>
+                <p className="eyebrow mb-4">
+                  {homepage.instagramSection.eyebrow}
+                </p>
+
                 <h2 className="max-w-lg font-serif text-4xl leading-tight text-ink md:text-5xl">
-                  Follow the journey.
+                  {homepage.instagramSection.title}
                 </h2>
+
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
-                  New spaces, behind the scenes and stories from the cities
-                  we call home.
+                  {homepage.instagramSection.text}
                 </p>
               </div>
+
               <a
                 href={siteSettings.instagramUrl}
                 target="_blank"
@@ -252,7 +300,10 @@ export default async function HomePage() {
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <EditorialFrame seed={seed} ratio="aspect-square" />
+                  <EditorialFrame
+                    seed={seed}
+                    ratio="aspect-square"
+                  />
                 </a>
               </FadeIn>
             ))}
@@ -260,23 +311,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 8 — DIRECT BOOKING CTA */}
+
+      {/* ================================================================
+          SECTION 8 — DIRECT BOOKING CTA
+      ================================================================= */}
+
       <section className="mx-auto max-w-content px-6 py-24 text-center md:px-10 md:py-32">
         <FadeIn>
           <h2 className="mx-auto max-w-2xl font-serif text-4xl leading-tight text-ink md:text-5xl">
-            Planning your next stay?
+            {homepage.bookingCta.title}
           </h2>
+
           <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted">
-            Book directly with our team for personal assistance, stay
-            recommendations and available direct-booking benefits.
+            {homepage.bookingCta.text}
           </p>
+
           <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <WhatsAppButton />
+
             <Link
               href="/stays"
               className="border border-ink/30 px-6 py-3 text-sm font-medium tracking-wide text-ink transition-colors duration-300 ease-editorial hover:border-ink hover:bg-ink hover:text-surface"
             >
-              Explore Stays
+              {homepage.bookingCta.staysButtonText}
             </Link>
           </div>
         </FadeIn>

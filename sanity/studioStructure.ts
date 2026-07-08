@@ -1,8 +1,15 @@
 import type { StructureResolver } from "sanity/structure";
 
-// Presents `siteSettings` and `founder` as singleton documents (a single
-// editable item, not a list you can create many of), while properties,
-// cities and journal posts remain normal document lists.
+// Singleton documents:
+// - Site Settings
+// - Homepage
+// - Founder
+//
+// Collection documents:
+// - Properties
+// - Cities
+// - Journal Posts
+
 export const structure: StructureResolver = (S) =>
   S.list()
     .title("LIVORAA Content")
@@ -10,12 +17,29 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title("Site Settings")
         .child(
-          S.document().schemaType("siteSettings").documentId("siteSettings")
+          S.document()
+            .schemaType("siteSettings")
+            .documentId("siteSettings")
         ),
+
+      S.listItem()
+        .title("Homepage")
+        .child(
+          S.document()
+            .schemaType("homepage")
+            .documentId("homepage")
+        ),
+
       S.listItem()
         .title("Founder")
-        .child(S.document().schemaType("founder").documentId("founder")),
+        .child(
+          S.document()
+            .schemaType("founder")
+            .documentId("founder")
+        ),
+
       S.divider(),
+
       S.documentTypeListItem("property").title("Properties"),
       S.documentTypeListItem("city").title("Cities"),
       S.documentTypeListItem("journalPost").title("Journal Posts"),

@@ -3,5 +3,13 @@ import city from "./city";
 import journalPost from "./journalPost";
 import founder from "./founder";
 import siteSettings from "./siteSettings";
+import homepage from "./homepage";
 
-export const schemaTypes = [property, city, journalPost, founder, siteSettings];
+export const schemaTypes = [
+  property,
+  city,
+  journalPost,
+  founder,
+  siteSettings,
+  homepage,
+];
